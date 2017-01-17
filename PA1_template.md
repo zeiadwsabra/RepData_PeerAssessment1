@@ -1,41 +1,47 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Loading and preprocessing the data
-```{r}
 
+```r
 dataset <- read.csv("activity.csv")
 dataset$date <- as.Date(dataset$date)
-
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 #Calculating  the total number of steps for each day.
 sum_day <- tapply(dataset$steps,dataset$date,sum)
 hist(sum_day, xlab = "total Number of steps per day")
-
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
 ### mean of total number of steps per day
-```{r}
+
+```r
 mean(sum_day, na.rm = TRUE)
+```
+
+```
+## [1] 10766.19
 ```
 
 ### median of total number of steps per day
 
-```{r}
+
+```r
 median(sum_day, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
-```{r}
 
+```r
 #Calculating the mean number of steps for each interval.
 steps <- tapply(dataset$steps,dataset$interval, mean, na.rm=TRUE)
 
@@ -47,19 +53,32 @@ with(mean_act_day,
 )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
 ### which interval has the highest average of steps
-```{r}
+
+```r
 mean_act_day$steps[which.max(mean_act_day$steps)]
+```
+
+```
+##      835 
+## 206.1698
 ```
 
 ## Imputing missing values
 
-```{r}
+
+```r
 print(paste("Total Number of NA values: ", sum(is.na(dataset$steps))))
 ```
 
-```{r}
+```
+## [1] "Total Number of NA values:  2304"
+```
 
+
+```r
 #Creating new copy of the dataset to imput missing values by 
 #using mean values for each interval.
 new_dataset <- dataset
@@ -69,32 +88,43 @@ na_int <- new_dataset$interval[na_loc]
 new_dataset$steps[na_loc] <- mean_act_day$steps[mean_act_day$interval %in% na_int]
 ```
 
-```{r}
+
+```r
 #Calculating the total number of steps each day.
 sum_day_imputed <- tapply(new_dataset$steps,dataset$date,sum)
 hist(sum_day_imputed, xlab = "Mean Number of steps per day(imputed data)") 
- 
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 ### Average of total number of steps per day for data with imputed missing values.
 
-```{r}
-mean(sum_day_imputed)
 
+```r
+mean(sum_day_imputed)
+```
+
+```
+## [1] 10766.19
 ```
 
 
 ### median of total number of steps per day for data with imputed missing values.
 
-```{r}
-median(sum_day_imputed)
 
+```r
+median(sum_day_imputed)
+```
+
+```
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
-```{r}
+
+```r
 library(timeDate)
 
 #Converting dates to weekdays and weekends
@@ -114,6 +144,7 @@ plot(steps$interval, steps$weekday, type = "l", main="Weekdays",
 
 plot(steps$interval, steps$weekend, type = "l", main="Weekends",
      xlab="Interval", ylab="Number of steps",ylim = c(0,250))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
